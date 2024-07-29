@@ -101,22 +101,24 @@ namespace E_imza.ImzaCS
             // get zaman damgası
             byte[] data = Encoding.ASCII.GetBytes("test");
             byte[] digest = DigestUtil.digest(DigestAlg.SHA256, data);
-            //TSClient tsClient = new TSClient();
-            //TSSettings settings = new TSSettings("http://ts384.e-guven.com", 6734, "Me3SDY4R", DigestAlg.SHA256);
-            //ETimeStampResponse response = tsClient.timestamp(digest, settings);
-            //byte[] tsBytes = response.getContentInfo().getEncoded();
+
             PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
             AcroFields pdfFormFields = pdfStamper.AcroFields;
-            #region MyRegion
-            //ITSAClient tsa = new TSAClientBouncyCastle("http://ts384.e-guven.com", "6734", "Me3SDY4R", 8192, "SHA-256");
-            //ITSAClient tsa = new TSAClientBouncyCastle("http://ts384.e-guven.com", "6734", "Me3SDY4R", 8192, "SHA-256");
+            #region Zaman Damgası
+            //TSClient tsClient = new TSClient();
+            //TSSettings settings = new TSSettings("URL", Kullanıcı ADI, "Şifre", DigestAlg.SHA256);
+            //ETimeStampResponse response = tsClient.timestamp(digest, settings);
+            //byte[] tsBytes = response.getContentInfo().getEncoded();
+            //ITSAClient tsa = new TSAClientBouncyCastle("URL", "Kullanıcı Adı", "Şifre", 8192, "SHA-256");
+            //ITSAClient tsa = new TSAClientBouncyCastle("URL", "Kullanıcı Adı", "Şifre", 8192, "SHA-256");
             //tsa.GetTimeStampToken(tsBytes);
-            //var url = "http://ts384.e-guven.com";
-            //var tsc = new TSAClientBouncyCastle(url, "6734", "Me3SDY4R", 4096, "SHA-512");
+            //var url = "URL";
+            //var tsc = new TSAClientBouncyCastle(url, "Kullanıcı Adı", "Şifre", 4096, "SHA-512");
+            // ITSAClient tSAClient = new TSAClientBouncyCastle("URL", "Kullanıcı adı", "Me3SDY4R");
+            //  var timeStamp = tSAClient.GetTimeStampToken(digest);
             #endregion
 
-            // ITSAClient tSAClient = new TSAClientBouncyCastle("http://ts384.e-guven.com", "6734", "Me3SDY4R");
-            //  var timeStamp = tSAClient.GetTimeStampToken(digest);
+
             crlList = new List<ICrlClient>();
             crlList.Add(crl);
 
@@ -157,11 +159,11 @@ namespace E_imza.ImzaCS
         {
             PdfReader pdfReader = new PdfReader(pdf);
             MemoryStream stream = new MemoryStream();
-            PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, stream, '\0', "C:/Users/byilmaz/Documents", true);
+            PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, stream, '\0', "/Documents", true);
 
             PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
 
-            ITSAClient tSAClient = new TSAClientBouncyCastle("http://ts384.e-guven.com", "6734", "Me3SDY4R");
+            ITSAClient tSAClient = new TSAClientBouncyCastle("Zaman Damgası İçin URL", "Kullanıcı Adı", "Şifre");
             LtvTimestamp.Timestamp(signatureAppearance, tSAClient, "KamuSM");
 
             return stream.ToArray();
